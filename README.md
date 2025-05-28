@@ -4,10 +4,14 @@ A simple keygen for generating unrestricted licenses (UR), including activation 
 
 ## Installation
 
-Either clone this repo and run `./build` in Git Bash for Windows or your local \*nix shell or download a pre-compiled version found in the releases tab [here](https://github.com/luxploit/pixlic/releases)
+Either clone this repo and run `./build.sh` in Git Bash for Windows or your local \*nix shell or download a pre-compiled version found in the releases tab [here](https://github.com/luxploit/pixlic/releases)
 
 ## Usage
 
 ```
-./pixlic [serial number]
+./pixlic.lxb [serial number]
 ```
+
+## Credits
+* https://blog.bjdch.org/2015/01/1976
+* http://www.anticisco.ru/forum/viewtopic.php?f=2&t=920
