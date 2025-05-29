@@ -18,22 +18,39 @@ func invertHexBytes(hexStr string) string {
 	return hex.EncodeToString(bytes)
 }
 
+// AES+DES+UR License
+const (
+	PIX_515_UR = "39000000"
+	PIX_525_UR = "38040000"
+)
+
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: ./pixlic <serial number>")
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: ./pixlic <serial number> [p525|p515]")
 		os.Exit(1)
 	}
 
 	arg, err := cast.ToInt64E(os.Args[1])
 	if err != nil {
 		fmt.Println("Invalid serial number provided!")
-		fmt.Println("Usage: ./pixlic <serial number>")
+		fmt.Println("Usage: ./pixlic <serial number> [p525|p515]")
+		os.Exit(1)
+	}
+
+	pixMode := os.Args[2]
+	license := ""
+	if pixMode == "p515" {
+		license = PIX_515_UR
+	} else if pixMode == "p525" {
+		license = PIX_525_UR
+	} else {
+		fmt.Println("Invalid pix mode provided!")
+		fmt.Println("Usage: ./pixlic <serial number> [p525|p515]")
 		os.Exit(1)
 	}
 
 	serial := invertHexBytes(strconv.FormatInt(arg, 16))
-	license := "39000000" // AES+DES+UR License
 	data, err := hex.DecodeString(license + serial)
 	if err != nil {
 		panic(err)
