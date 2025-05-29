@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 
 	"github.com/spf13/cast"
@@ -20,6 +21,8 @@ func invertHexBytes(hexStr string) string {
 
 func main() {
 
+	testLic := []string{"0xa94bffde", "0x802610c9", "0x25221732", "0x585f4871"}
+
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: ./pixlic <serial number>")
 		os.Exit(1)
@@ -33,17 +36,40 @@ func main() {
 	}
 
 	serial := invertHexBytes(strconv.FormatInt(arg, 16))
-	license := "39000000" // AES+DES+UR License
-	data, err := hex.DecodeString(license + serial)
-	if err != nil {
-		panic(err)
-	}
-	hash := fmt.Sprintf("%x", md5.Sum(data))
 
-	print("Here's your PIX UR License: ")
-	for idx := 0; idx < 16; idx += 4 {
-		part := hash[(idx * 2):((idx + 4) * 2)]
-		fmt.Printf("0x%s ", invertHexBytes(part))
+	for idx := range 0x5F5E0FF {
+		lic := invertHexBytes(fmt.Sprintf("%08X", idx))
+		data, err := hex.DecodeString(lic + serial)
+		if err != nil {
+			panic(err)
+		}
+		hash := fmt.Sprintf("%x", md5.Sum(data))
+
+		parts := []string{}
+		for idx := 0; idx < 16; idx += 4 {
+			parts = append(parts, ("0x" + invertHexBytes(hash[(idx*2):((idx+4)*2)])))
+		}
+
+		if slices.Equal(parts, testLic) {
+			fmt.Println("MAGIC SERIAL FOUND:", lic)
+			fmt.Printf("dataStr: %s\n", lic+serial)
+			fmt.Printf("data: %v\n", data)
+			fmt.Printf("lic: %s %s %s %s\n", parts[0], parts[1], parts[2], parts[3])
+			return
+		}
 	}
-	println()
+
+	// license := "39000000" // AES+DES+UR License
+	// data, err := hex.DecodeString(license + serial)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// hash := fmt.Sprintf("%x", md5.Sum(data))
+
+	// print("Here's your PIX UR License: ")
+	// for idx := 0; idx < 16; idx += 4 {
+	// 	part := hash[(idx * 2):((idx + 4) * 2)]
+	// 	fmt.Printf("0x%s ", invertHexBytes(part))
+	// }
+	// println()
 }
