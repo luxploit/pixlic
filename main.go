@@ -21,19 +21,19 @@ func invertHexBytes(hexStr string) string {
 
 func main() {
 
-	testLic := []string{"0xa94bffde", "0x802610c9", "0x25221732", "0x585f4871"}
-
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: ./pixlic <serial number>")
+	if len(os.Args) < 6 {
+		fmt.Println("Usage: ./pixlic <serial number> <... license tuple ...>")
 		os.Exit(1)
 	}
 
 	arg, err := cast.ToInt64E(os.Args[1])
 	if err != nil {
 		fmt.Println("Invalid serial number provided!")
-		fmt.Println("Usage: ./pixlic <serial number>")
+		fmt.Println("Usage: ./pixlic <serial number> <... license tuple ...>")
 		os.Exit(1)
 	}
+
+	testLic := []string{os.Args[2], os.Args[3], os.Args[4], os.Args[5]}
 
 	serial := invertHexBytes(strconv.FormatInt(arg, 16))
 
